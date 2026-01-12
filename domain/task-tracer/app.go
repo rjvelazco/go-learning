@@ -13,7 +13,7 @@ func App() {
 	reader := bufio.NewReader(os.Stdin)
 	CreateTaskFileIfNeeded()
 	for {
-		fmt.Println("\nSelect an option:")
+		fmt.Println("\nSelect an option:\n")
 		for i, opt := range options {
 			if i == len(options)-1 {
 				fmt.Printf("%d. %s\n", 0, opt)
@@ -21,19 +21,20 @@ func App() {
 			}
 			fmt.Printf("%d. %s\n", i+1, opt)
 		}
-		fmt.Print("Enter your choice: ")
+		fmt.Print("\nEnter your choice: ")
 		choice, _ := reader.ReadString('\n')
 		choiceInt, _ := strconv.Atoi(strings.TrimSpace(choice))
+		fmt.Println("\n")
 
 		switch choiceInt {
 		case 1:
-			fmt.Println("Adding task...")
+			CreateTask()
 		case 2:
 			fmt.Println("Updating task...")
 		case 3:
 			fmt.Println("Deleting task...")
 		case 4:
-			fmt.Println("Listing all tasks...")
+			ListTasks()
 		case 5:
 			fmt.Println("Listing done tasks...")
 		case 6:
