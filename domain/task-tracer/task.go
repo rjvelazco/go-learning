@@ -1,5 +1,10 @@
 package tasktracer
 
+import (
+	"errors"
+	"os"
+)
+
 type Task struct {
 	ID          int
 	Title       string
@@ -26,4 +31,26 @@ func (t *Task) UpdateTitle(title string) {
 
 func (t *Task) UpdateDescription(description string) {
 	t.Description = description
+}
+
+func CreateTaskFileIfNeeded() {
+	if fileExists("tasks.json") {
+		return
+	}
+
+	os.Create("tasks.json")
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+
+	if err == nil {
+		return true
+	}
+
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+
+	return false
 }
