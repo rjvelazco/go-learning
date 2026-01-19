@@ -1,14 +1,13 @@
 package tasktracer
 
 import (
-	"bufio"
 	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"math/big"
 	"os"
-	"strings"
+	"strconv"
 )
 
 type Task struct {
@@ -18,14 +17,9 @@ type Task struct {
 	Status      string `json:"status"`
 }
 
-func CreateTask() {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter task title: ")
-	title, _ := reader.ReadString('\n')
-	title = strings.TrimSpace(title)
-	fmt.Print("Enter task description: ")
-	description, _ := reader.ReadString('\n')
-	description = strings.TrimSpace(description)
+func handleAdd(taskData []string) {
+	title := taskData[0]
+	description := taskData[1]
 	randomID, _ := rand.Int(rand.Reader, big.NewInt(1000000))
 
 	AddTask(Task{
@@ -34,6 +28,27 @@ func CreateTask() {
 		Description: description,
 		Status:      "new",
 	})
+}
+
+func handleUpdate(args []string) {
+	id, err := strconv.Atoi(args[0])
+	title := args[1]
+	description := args[2]
+	if err != nil {
+		fmt.Printf("Error converting ID to int: %v\n", err)
+		return
+	}
+
+	UpdateTask(int(id), title, description)
+}
+
+func handleDelete(args []string) {
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		fmt.Printf("Error converting ID to int: %v\n", err)
+		return
+	}
+	DeleteTask(int(id))
 }
 
 func (t *Task) UpdateStatus(status string) {
@@ -86,6 +101,40 @@ func AddTask(task Task) {
 	tasks := getTasks()
 	tasks = append(tasks, task)
 	content, err := json.Marshal(tasks)
+	if err != nil {
+		fmt.Printf("Error marshalling JSON: %v\n", err)
+		return
+	}
+	os.WriteFile("tasks.json", content, 0644)
+}
+
+func UpdateTask(id int, title string, description string) {
+	tasks := getTasks()
+	for i, task := range tasks {
+		if task.ID == id {
+			tasks[i].Title = title
+			tasks[i].Description = description
+			break
+		}
+	}
+	content, err := json.Marshal(tasks)
+	if err != nil {
+		fmt.Printf("Error marshalling JSON: %v\n", err)
+		return
+	}
+	os.WriteFile("tasks.json", content, 0644)
+}
+
+func DeleteTask(id int) {
+	tasks := getTasks()
+	newTasks := []Task{}
+	for i, task := range tasks {
+		if task.ID == id {
+			newTasks = append(tasks[:i], tasks[i+1:]...)
+			break
+		}
+	}
+	content, err := json.Marshal(newTasks)
 	if err != nil {
 		fmt.Printf("Error marshalling JSON: %v\n", err)
 		return
