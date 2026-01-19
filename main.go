@@ -1,7 +1,9 @@
 package main
 
-import tasktracer "learning-go/domain/task-tracer"
+// If you want to use the task tracer, you can uncomment the following line
+// import tasktracer "learning-go/domain/task-tracer"
 
 func main() {
-	tasktracer.App()
+	// If you want to use the task tracer, uncomment the following line
+	// tasktracer.App()
 }

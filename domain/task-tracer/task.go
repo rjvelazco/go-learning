@@ -32,7 +32,7 @@ func handleAdd(taskData []string) {
 		ID:          int(randomID.Int64()),
 		Title:       title,
 		Description: description,
-		Status:      "new",
+		Status:      "todo",
 	})
 }
 
@@ -103,13 +103,19 @@ func ListByStatusTasks(status string) {
 		return
 	}
 
+	isEmpty := true
 	tasks := getTasks()
 	fmt.Printf("Listing %s tasks:\n", status)
 	fmt.Println("--------------------------------")
 	for _, task := range tasks {
 		if task.Status == status {
+			isEmpty = false
 			fmt.Printf("ID: %d, Title: %s, Description: %s, Status: %s\n", task.ID, task.Title, task.Description, task.Status)
 		}
+	}
+
+	if isEmpty {
+		fmt.Printf("No tasks found in: \"%s\" Status\n", status)
 	}
 	fmt.Println("--------------------------------")
 }
