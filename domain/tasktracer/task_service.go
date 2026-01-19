@@ -21,7 +21,9 @@ func UpdateTask(id int, title string, description string) {
 	for i, task := range tasks {
 		if task.ID == id {
 			tasks[i].Title = title
-			tasks[i].Description = description
+			if description != "" {
+				tasks[i].Description = description
+			}
 			break
 		}
 	}

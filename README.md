@@ -6,3 +6,11 @@ This repo is a sandbox for building **multiple small Go programs** (mini-apps) t
 
 - **`cmd/`**: runnable apps (each folder builds to a binary)
 - **`domain/`**: reusable packages (core logic)
+
+### Run an app
+
+- **Task Tracer**:
+
+```bash
+go run ./cmd/tasktracer help
+```

@@ -7,16 +7,19 @@ import (
 	"strconv"
 )
 
-// addNewTask adds a new task to the task list and persists it to disk.
+// AddNewTask adds a new task to the task list and persists it to disk.
 func AddNewTask(taskData []string) {
-	if len(taskData) < 2 {
-		fmt.Printf("Error: Missing title and description\n")
-		fmt.Printf("Usage: task-cli add \"title\" \"description\"\n")
+	if len(taskData) < 1 {
+		fmt.Printf("Error: Missing title\n")
+		fmt.Printf("Usage: task-cli add \"title\" [\"description\"]\n")
 		return
 	}
 
 	title := taskData[0]
-	description := taskData[1]
+	description := ""
+	if len(taskData) >= 2 {
+		description = taskData[1]
+	}
 	randomID, _ := rand.Int(rand.Reader, big.NewInt(1000000))
 
 	AddTask(Task{
@@ -36,9 +39,9 @@ func UpdateTaskById(id string, title string, description string) {
 		fmt.Printf("Usage: task-cli update <id> \"title\" \"description\"\n")
 		return
 	}
-	if idInt < 0 || title == "" || description == "" {
-		fmt.Printf("Error: Invalid ID, title or description\n")
-		fmt.Printf("Usage: task-cli update <id> \"title\" \"description\"\n")
+	if idInt < 0 || title == "" {
+		fmt.Printf("Error: Invalid ID or title\n")
+		fmt.Printf("Usage: task-cli update <id> \"title\" [\"description\"]\n")
 		return
 	}
 

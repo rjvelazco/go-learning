@@ -23,12 +23,17 @@ func App() {
 	case "add":
 		AddNewTask(rest)
 	case "update":
-		if len(rest) < 3 {
-			fmt.Printf("Error: Missing ID, title and description\n")
+		if len(rest) < 2 {
+			fmt.Printf("Error: Missing ID and title\n")
 			usage()
 			os.Exit(1)
 		}
-		UpdateTaskById(rest[0], rest[1], rest[2])
+		if len(rest) >= 3 {
+			UpdateTaskById(rest[0], rest[1], rest[2])
+		} else {
+			// Support a shorter form: update <id> "title"
+			UpdateTaskById(rest[0], rest[1], "")
+		}
 	case "delete":
 		if len(rest) < 1 {
 			fmt.Printf("Error: Missing ID\n")
@@ -66,8 +71,8 @@ func App() {
 
 func usage() {
 	fmt.Fprintln(os.Stderr, "Usage:")
-	fmt.Fprintln(os.Stderr, "  task-cli add \"title\" \"description\"")
-	fmt.Fprintln(os.Stderr, "  task-cli update <id> \"title\" \"description\"")
+	fmt.Fprintln(os.Stderr, "  task-cli add \"title\" [\"description\"]")
+	fmt.Fprintln(os.Stderr, "  task-cli update <id> \"title\" [\"description\"]")
 	fmt.Fprintln(os.Stderr, "  task-cli delete <id>")
 	fmt.Fprintln(os.Stderr, "  task-cli mark-in-progress <id>")
 	fmt.Fprintln(os.Stderr, "  task-cli mark-done <id>")
