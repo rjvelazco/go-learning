@@ -17,11 +17,24 @@ func App() {
 	rest := args[1:]
 
 	switch cmd {
+	case "help", "-h", "--help":
+		usage()
+		return
 	case "add":
 		AddNewTask(rest)
 	case "update":
+		if len(rest) < 3 {
+			fmt.Printf("Error: Missing ID, title and description\n")
+			usage()
+			os.Exit(1)
+		}
 		UpdateTaskById(rest[0], rest[1], rest[2])
 	case "delete":
+		if len(rest) < 1 {
+			fmt.Printf("Error: Missing ID\n")
+			usage()
+			os.Exit(1)
+		}
 		handleDelete(rest)
 	case "list":
 		if len(rest) == 0 {
@@ -30,8 +43,18 @@ func App() {
 			ListByStatusTasks(rest[0])
 		}
 	case "mark-in-progress":
+		if len(rest) < 1 {
+			fmt.Printf("Error: Missing ID\n")
+			usage()
+			os.Exit(1)
+		}
 		updateTaskStatus(rest[0], "in-progress")
 	case "mark-done":
+		if len(rest) < 1 {
+			fmt.Printf("Error: Missing ID\n")
+			usage()
+			os.Exit(1)
+		}
 		updateTaskStatus(rest[0], "done")
 
 	default:

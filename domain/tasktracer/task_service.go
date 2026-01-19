@@ -69,4 +69,8 @@ func updateTaskStatus(id string, status string) {
 			break
 		}
 	}
+
+	if err := saveTasks(tasks); err != nil {
+		fmt.Printf("Error saving tasks: %v\n", err)
+	}
 }
