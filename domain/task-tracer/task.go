@@ -18,6 +18,12 @@ type Task struct {
 }
 
 func handleAdd(taskData []string) {
+	if len(taskData) < 2 {
+		fmt.Printf("Error: Missing title and description\n")
+		fmt.Printf("Usage: task-cli add \"title\" \"description\"\n")
+		return
+	}
+
 	title := taskData[0]
 	description := taskData[1]
 	randomID, _ := rand.Int(rand.Reader, big.NewInt(1000000))
@@ -31,13 +37,20 @@ func handleAdd(taskData []string) {
 }
 
 func handleUpdate(args []string) {
+	if len(args) < 3 {
+		fmt.Printf("Error: Missing ID, title and description\n")
+		fmt.Printf("Usage: task-cli update <id> \"title\" \"description\"\n")
+		return
+	}
+
 	id, err := strconv.Atoi(args[0])
-	title := args[1]
-	description := args[2]
 	if err != nil {
 		fmt.Printf("Error converting ID to int: %v\n", err)
 		return
 	}
+
+	title := args[1]
+	description := args[2]
 
 	UpdateTask(int(id), title, description)
 }
@@ -49,6 +62,16 @@ func handleDelete(args []string) {
 		return
 	}
 	DeleteTask(int(id))
+}
+
+func listTasks(status string) {
+	tasks := getTasks()
+	fmt.Println("Listing all tasks:")
+	fmt.Println("--------------------------------")
+	for _, task := range tasks {
+		fmt.Printf("ID: %d, Title: %s, Description: %s, Status: %s\n", task.ID, task.Title, task.Description, task.Status)
+	}
+	fmt.Println("--------------------------------")
 }
 
 func (t *Task) UpdateStatus(status string) {
@@ -63,7 +86,7 @@ func (t *Task) UpdateDescription(description string) {
 	t.Description = description
 }
 
-func ListTasks() {
+func ListAllTasks() {
 	tasks := getTasks()
 	fmt.Println("Listing all tasks:")
 	fmt.Println("--------------------------------")
@@ -73,27 +96,22 @@ func ListTasks() {
 	fmt.Println("--------------------------------")
 }
 
-// File Utils
-func CreateTaskFileIfNeeded() {
-	if fileExists("tasks.json") {
+func ListByStatusTasks(status string) {
+	if status != "done" && status != "todo" && status != "in-progress" {
+		fmt.Printf("Invalid status: %s\n", status)
+		fmt.Printf("Usage: task-cli list [done|todo|in-progress]\n")
 		return
 	}
 
-	os.Create("tasks.json")
-}
-
-func fileExists(filename string) bool {
-	_, err := os.Stat(filename)
-
-	if err == nil {
-		return true
+	tasks := getTasks()
+	fmt.Printf("Listing %s tasks:\n", status)
+	fmt.Println("--------------------------------")
+	for _, task := range tasks {
+		if task.Status == status {
+			fmt.Printf("ID: %d, Title: %s, Description: %s, Status: %s\n", task.ID, task.Title, task.Description, task.Status)
+		}
 	}
-
-	if errors.Is(err, os.ErrNotExist) {
-		return false
-	}
-
-	return false
+	fmt.Println("--------------------------------")
 }
 
 // Task Utils
@@ -157,4 +175,27 @@ func getTasks() []Task {
 	}
 
 	return tasks
+}
+
+// File Utils
+func CreateTaskFileIfNeeded() {
+	if fileExists("tasks.json") {
+		return
+	}
+
+	os.Create("tasks.json")
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+
+	if err == nil {
+		return true
+	}
+
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+
+	return false
 }

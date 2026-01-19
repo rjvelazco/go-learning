@@ -20,11 +20,15 @@ func App() {
 	case "add":
 		handleAdd(rest)
 	case "update":
-		// handleUpdate(rest)
+		handleUpdate(rest)
 	case "delete":
-		// handleDelete(rest)
+		handleDelete(rest)
 	case "list":
-		fmt.Println("list")
+		if len(rest) == 0 {
+			ListAllTasks()
+		} else {
+			ListByStatusTasks(rest[0])
+		}
 	case "mark-in-progress":
 		fmt.Println("mark-in-progress")
 	case "mark-done":
@@ -38,8 +42,8 @@ func App() {
 
 func usage() {
 	fmt.Fprintln(os.Stderr, "Usage:")
-	fmt.Fprintln(os.Stderr, "  task-cli add \"description\"")
-	fmt.Fprintln(os.Stderr, "  task-cli update <id> \"description\"")
+	fmt.Fprintln(os.Stderr, "  task-cli add \"title\" \"description\"")
+	fmt.Fprintln(os.Stderr, "  task-cli update <id> \"title\" \"description\"")
 	fmt.Fprintln(os.Stderr, "  task-cli delete <id>")
 	fmt.Fprintln(os.Stderr, "  task-cli mark-in-progress <id>")
 	fmt.Fprintln(os.Stderr, "  task-cli mark-done <id>")
