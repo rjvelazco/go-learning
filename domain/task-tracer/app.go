@@ -18,9 +18,9 @@ func App() {
 
 	switch cmd {
 	case "add":
-		handleAdd(rest)
+		AddNewTask(rest)
 	case "update":
-		handleUpdate(rest)
+		UpdateTaskById(rest[0], rest[1], rest[2])
 	case "delete":
 		handleDelete(rest)
 	case "list":
@@ -30,9 +30,10 @@ func App() {
 			ListByStatusTasks(rest[0])
 		}
 	case "mark-in-progress":
-		fmt.Println("mark-in-progress")
+		updateTaskStatus(rest[0], "in-progress")
 	case "mark-done":
-		fmt.Println("mark-done")
+		updateTaskStatus(rest[0], "done")
+
 	default:
 		fmt.Fprintf(os.Stderr, "Invalid command: %s\n\n", cmd)
 		usage()
